@@ -1,0 +1,17 @@
+requests
+python-dotenv
+eyecite
+networkx
+chromadb
+sentence-transformers
+transformers
+torch
+anthropic
+streamlit
+pandas
+tqdm
+pytest
+matplotlib
+ipykernel
+openai
+tiktoken
