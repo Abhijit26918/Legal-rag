@@ -12,6 +12,7 @@ from openai import OpenAI
 
 import config
 from generation.prompts import build_messages
+from llm_utils import with_retry
 from retrieval.hybrid_retrieve import hybrid_retrieve
 
 _anthropic_client = None
@@ -37,24 +38,24 @@ def _get_groq_client():
 
 
 def _call_anthropic(system_prompt, user_message, model, max_tokens):
-    response = _get_anthropic_client().messages.create(
+    response = with_retry(lambda: _get_anthropic_client().messages.create(
         model=model or config.GENERATION_MODEL_API,
         max_tokens=max_tokens,
         system=system_prompt,
         messages=[{"role": "user", "content": user_message}],
-    )
+    ))
     return "".join(block.text for block in response.content if block.type == "text")
 
 
 def _call_groq(system_prompt, user_message, model, max_tokens):
-    response = _get_groq_client().chat.completions.create(
+    response = with_retry(lambda: _get_groq_client().chat.completions.create(
         model=model or config.GENERATION_MODEL_GROQ_PRIMARY,
         max_tokens=max_tokens,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
         ],
-    )
+    ))
     return response.choices[0].message.content
 
 

@@ -76,3 +76,10 @@ NLI_MODEL = "cross-encoder/nli-deberta-v3-base"
 # --- Precedent currency ---
 CURRENCY_TRAVERSAL_DEPTH = 2
 STALE_TREATMENTS = {"overruled", "superseded", "abrogated"}
+# CourtListener's live API (used to fetch text for external citing opinions
+# — ones outside our 1,696-opinion corpus) is capped at 125 requests/day
+# (see ingest/fetch_opinions.py). A heavily-cited landmark case can have
+# dozens of external forward-citers; capping per-call keeps one currency
+# check from burning the whole daily budget. Internal citers cost nothing
+# (text already local) and are never capped.
+CURRENCY_MAX_EXTERNAL_LOOKUPS = 15
